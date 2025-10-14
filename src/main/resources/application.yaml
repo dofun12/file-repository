@@ -1,0 +1,23 @@
+spring:
+  thymeleaf: # Thymeleaf
+    cache: false
+    mode: HTML
+    encoding: UTF-8
+    prefix: file:src/main/resources/templates/
+  application:
+    name: file-repository
+
+
+  servlet:
+    multipart:
+      max-file-size: 10GB
+      max-request-size: 10GB
+  web:
+    resources:
+      static-locations: file:src/main/resources/static/
+      cache:
+        period: 0
+
+filerepository:
+  root:
+    path: "storage-files"

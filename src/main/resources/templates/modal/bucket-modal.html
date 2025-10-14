@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<th:block th:fragment="modal">
+    <script>
+        function closeModal(){
+            const modalElement = document.getElementById('exampleModal');
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            console.log("foisadasdasd");
+            modal.hide();
+            modalElement.dispatchEvent(new CustomEvent('modalClosed', { detail: { updated: true } }));
+        }
+        function send(){
+            const data = JSON.stringify({
+                "bucketName": document.getElementById("bucketNameInput").value
+            });
+            console.log('Send',data);
+            fetch("/api/v1/bucket/", {
+                body: data,
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                closeModal();
+                if(response.ok){
+                    console.log("Ok")
+                } else {
+                    console.log("ERROR")
+                }
+            }).catch(err => {
+                console.log("ERROR")
+            });
+
+        }
+
+    </script>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label for="bucketNameInput" class="col-form-label">Bucket name</label>
+                        <input type="text" class="form-control" id="bucketNameInput">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <input type="button" onclick="send()" class="btn btn-primary" value="Send message"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="br" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org"
+>
+<head>
+     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>OPA</title>
+    <script src="http://localhost:35729/livereload.js"></script>
+    <link th:href="@{/lib/bootstrap-5.3.8-dist/css/bootstrap.css}" rel="stylesheet" crossorigin="anonymous"/>
+</head>
+<body>
+<script th:src="@{/lib/jquery/jquery-3.7.1.min.js}"></script>
+<script th:src="@{/lib/bootstrap-5.3.8-dist/js/bootstrap.min.js}"></script>
+<th:block th:replace="~{modal/bucket-modal :: modal}"></th:block>
+<div class="container">
+    <form th:action="@{/upload}" method="post" enctype="multipart/form-data">
+        <div class="row g-3 align-items-center mt-4" >
+            <div class="col-1">
+                <label class="form-control" for="bucketNameId">BucketName</label>
+            </div>
+            <div class="col-10">
+                <select class="form-control" name="bucketName" id="bucketNameId">
+                    <option value="default">default</option>
+                </select>
+            </div>
+            <div class="col-1">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Novo</button>
+            </div>
+
+        </div>
+
+        <input class="form-control mb-4" style="height: 200px" type="file" name="file"/>
+        <button class="form-control btn btn-info" type="submit">Upload</button>
+    </form>
+</div>
+
+<div>
+    <a th:href="@{/files}">View Files</a>
+</div>
+<div th:text="${message}"></div>
+<script type="text/javascript">
+    function loadBuckets() {
+        fetch("/api/v1/bucket/").then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                console.log("ERROR")
+            }
+        }).then(data => {
+            console.log(data);
+            const select = document.getElementById("bucketNameId");
+            select.innerHTML = "";
+            data.forEach(bucket => {
+                const option = document.createElement("option");
+                option.value = bucket.bucketName;
+                option.innerText = bucket.bucketName;
+                select.appendChild(option);
+            });
+        }).catch(err => {
+            console.log("ERROR")
+        });
+    }
+    document.getElementById("exampleModal").addEventListener("modalClosed", function(event) {
+        if (event.detail.updated) {
+            console.log("Atualizado!");
+            loadBuckets();
+        }
+    });
+    loadBuckets();
+</script>
+
+
+</body>
+</html>

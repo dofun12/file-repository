@@ -25,16 +25,16 @@
                 if(response.ok){
                     console.log("Ok")
                 } else {
-                    console.log("ERROR")
+                    console.log("ERROR", response);
                 }
             }).catch(err => {
-                console.log("ERROR")
+                console.log("ERROR", err)
             });
 
         }
 
     </script>
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="bucketModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

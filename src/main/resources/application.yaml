@@ -20,4 +20,4 @@ spring:
 
 filerepository:
   root:
-    path: "storage-files"
+    path: "${LOCAL_STORAGE_PATH:storage-files}"

@@ -6,49 +6,57 @@ import org.lemanoman.filerepository.service.BucketService;
 import org.lemanoman.filerepository.service.StoreService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Controller
-@RequestMapping("/")
-public class UploadController {
-    static final Logger logger = LoggerFactory.getLogger(UploadController.class);
-    private final StoreService uploadService;
+@RequestMapping("/files")
+public class FilesController {
+    static final Logger logger = LoggerFactory.getLogger(FilesController.class);
+    private final StoreService storeService;
     private final BucketService bucketService;
+    private final StoreService uploadService;
 
-    public UploadController(StoreService uploadService, BucketService bucketService) {
-        this.uploadService = uploadService;
+    public FilesController(StoreService storeService, BucketService bucketService, StoreService uploadService) {
+        this.storeService = storeService;
         this.bucketService = bucketService;
+        this.uploadService = uploadService;
     }
 
 
-    @GetMapping
-    public String index() {
-
-        return "upload";
+    @GetMapping({"/",""})
+    public String index(Model model) {
+        List<FileExtraInfo> metadataList = storeService.getListAllMetadata();
+        model.addAttribute("bucketName", "All Buckets");
+        model.addAttribute("metadataList", metadataList);
+        return "files-list";
     }
 
-    @PostMapping("/upload")
+    @GetMapping({"/bucket/{bucketName}"})
+    public String index(@PathVariable String bucketName, Model model) {
+        List<FileExtraInfo> metadataList = storeService.getListAllMetadataGroupByBucket().get(bucketName);
+        model.addAttribute("bucketName", bucketName);
+        model.addAttribute("metadataList", metadataList);
+        return "files-list";
+    }
+
+    @PostMapping("/bucket/{bucketName}")
     public String handleFileUpload(
+            @PathVariable("bucketName") String bucketName,
             @RequestParam(value = "file") MultipartFile[] files,
-            @RequestParam(value = "bucketName", required = false) String bucketName,
             Model model
     ) {
 
 
         if (files == null || files.length == 0) {
             model.addAttribute("message", "Please select a file to upload");
-            return "upload";
+            return "redirect:/files/bucket/" + bucketName;
         }
-        model.addAttribute("bucketList", bucketService.getListConfigs().stream().map(BucketConfig::getBucketName));
         StringBuilder messages = new StringBuilder();
         for (MultipartFile file : files) {
             FileExtraInfo fileExtraInfo = new FileExtraInfo();
@@ -63,11 +71,11 @@ public class UploadController {
                 messages.append(file.getOriginalFilename()).append(",\n ");
             } catch (IOException e) {
                 messages.append(e.getMessage()).append(" \n");
-
                 e.printStackTrace();
             }
         }
         model.addAttribute("message", messages.toString());
-        return "upload";
+        return "redirect:/files/bucket/" + bucketName;
     }
+
 }

@@ -25,13 +25,19 @@ public class BucketService {
     public List<BucketConfig> getListConfigs() {
         File bucketConfigFile = locationService.getBucketFile();
         if(!bucketConfigFile.exists()) {
-            return new ArrayList<>();
+            final var bucketConfig = BucketConfig.BuildDefault();
+            return List.of(bucketConfig);
         }
         BucketConfig[] bucketConfigs = {};
         try {
             bucketConfigs = objectMapper.readValue(bucketConfigFile, BucketConfig[].class);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        if(bucketConfigs == null|| bucketConfigs.length==0) {
+            final var bucketConfig = BucketConfig.BuildDefault();
+
+            return List.of(bucketConfig);
         }
         return Arrays.asList(bucketConfigs);
     }
@@ -58,7 +64,7 @@ public class BucketService {
         }
     }
 
-    public void addBucketConfig(BucketConfig bucketConfig) {
+    public void addBucketConfig(final BucketConfig bucketConfig) {
         var lastList = new ArrayList<>(getListConfigs());
         if(lastList.stream().noneMatch(b -> b.getBucketName().equals(bucketConfig.getBucketName()))) {
             lastList.add(bucketConfig);

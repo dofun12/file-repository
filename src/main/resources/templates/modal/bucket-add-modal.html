@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<th:block th:fragment="modal(postActionUrl)">
+    <div class="modal fade" id="bucketModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <form class="modal-dialog" th:action="${postActionUrl}"  method="post" >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label for="bucketNameInput" class="col-form-label">Bucket name</label>
+                        <input type="text" class="form-control" name="bucketName" id="bucketNameInput">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <input type="submit" class="btn btn-primary" value="Send message"/>
+                </div>
+            </div>
+        </form>
+    </div>
+</th:block>

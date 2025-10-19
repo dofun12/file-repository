@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="br" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org"
+>
+<head>
+     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>OPA</title>
+    <script src="http://localhost:35729/livereload.js"></script>
+    <link th:href="@{/lib/bootstrap-5.3.8-dist/css/bootstrap.css}" rel="stylesheet" crossorigin="anonymous"/>
+</head>
+<body>
+<script th:src="@{/lib/jquery/jquery-3.7.1.min.js}"></script>
+<script th:src="@{/lib/bootstrap-5.3.8-dist/js/bootstrap.min.js}"></script>
+<th:block th:replace="~{modal/bucket-modal :: modal}"></th:block>
+<div class="container">
+    <h2 class="mb-4" th:text="'Bucket List: '+${bucketName}"></h2>
+    <!-- Thymeleaf template for displaying bucket lists -->
+    <div class="row">
+        <div class="col-8">
+            <div class="row" th:each="meta : ${metadataList}">
+                <div class="col"><a th:href="@{/api/v1/download/{fileId}(fileId=${meta.id})}" target="_blank"><span th:text="${meta.filename}"></span></a></div>
+            </div>
+        </div>
+        <div class="col-4">
+            <form th:action="@{/files/bucket/{bucketName}(bucketName=${bucketName})}" method="post" enctype="multipart/form-data">
+                <input class="form-control mb-4" style="height: 200px" multiple type="file" name="file"/>
+                <button class="form-control btn btn-info" type="submit">Upload</button>
+            </form>
+        </div>
+
+    </div>
+    <footer class="mt-4">
+        <a th:href="@{/buckets/}">Back to buckets</a>
+    </footer>
+
+</div>
+
+</body>
+</html>

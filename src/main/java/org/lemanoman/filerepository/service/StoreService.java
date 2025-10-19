@@ -20,18 +20,49 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Service
-public class UploadService {
-    final Logger logger = LoggerFactory.getLogger(UploadService.class);
+public class StoreService {
+    final Logger logger = LoggerFactory.getLogger(StoreService.class);
     private ExecutorService executor = Executors.newFixedThreadPool(2);
 
     final LocationService locationService;
     final ObjectMapper objectMapper = new ObjectMapper();
     final BucketService bucketService;
 
-    public UploadService(LocationService locationService, BucketService bucketService) {
+    public StoreService(LocationService locationService, BucketService bucketService) {
         this.locationService = locationService;
         this.bucketService = bucketService;
     }
+
+    public List<FileExtraInfo> getListAllMetadata() {
+        File metadataDir = locationService.getMetadataFolder();
+        if(!metadataDir.exists()) {
+            return new ArrayList<>();
+        }
+        List<FileExtraInfo> list = new ArrayList<>();
+        for(File file : Objects.requireNonNull(metadataDir.listFiles())) {
+            if(!file.getName().endsWith(".json")) {
+                continue;
+            }
+            try {
+                FileExtraInfo fileExtraInfo = objectMapper.readValue(file, FileExtraInfo.class);
+                list.add(fileExtraInfo);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return list;
+    }
+
+    public Map<String, List<FileExtraInfo>> getListAllMetadataGroupByBucket() {
+        var list = getListAllMetadata();
+        return list.stream().collect(HashMap::new, (m,v) -> {
+            if(!m.containsKey(v.getBucketName())) {
+                m.put(v.getBucketName(), new ArrayList<>());
+            }
+            m.get(v.getBucketName()).add(v);
+        }, HashMap::putAll);
+    }
+
     public File storeMetadata(FileExtraInfo fileExtraInfo) {
         File metadataDir = locationService.getMetadataFolder();
         if (!metadataDir.exists()) {

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="br" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org"
+>
+<head>
+     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>OPA</title>
+    <script src="http://localhost:35729/livereload.js"></script>
+    <link th:href="@{/lib/bootstrap-5.3.8-dist/css/bootstrap.css}" rel="stylesheet" crossorigin="anonymous"/>
+</head>
+<body>
+<script th:src="@{/lib/jquery/jquery-3.7.1.min.js}"></script>
+<script th:src="@{/lib/bootstrap-5.3.8-dist/js/bootstrap.min.js}"></script>
+<th:block th:replace="~{modal/bucket-add-modal.html :: modal(@{/buckets/})}"></th:block>
+
+<div class="container">
+    <div class="row">
+        <div class="col-10">
+            <h2 class="mb-4">Buckets</h2>
+        </div>
+        <div class="col-2 text-end mt-4">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bucketModal" data-bs-whatever="@mdo">New Bucket</button>
+        </div>
+    </div>
+
+    <!-- Thymeleaf template for displaying bucket lists -->
+    <div class="row">
+        <div class="col bucket-out"  th:each="bucket : ${bucketList}">
+            <a class="row" th:href="@{/files/bucket/{bucketName}(bucketName=${bucket.bucketName})}">
+                <div class="col-12">
+                    <img src="/images/folder.svg" width="100" height="100" alt="folder">
+                </div>
+                <div class="col-12">
+                    <span th:text="${bucket.bucketName}"></span>
+                </div>
+            </a>
+        </div>
+    </div>
+    <footer class="mt-4">
+        <a th:href="@{/buckets/}">Back to buckets</a><br />
+        <a th:href="@{/}">Back to Upload</a>
+    </footer>
+</div>
+<script type="text/javascript">
+    function loadBuckets() {
+        fetch("/api/v1/bucket/").then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                console.log("ERROR")
+            }
+        }).then(data => {
+            console.log(data);
+            const container = document.querySelector(".bucket-out");
+            container.innerHTML = "";
+            data.forEach(bucket => {
+                const bucketDiv = document.createElement("div");
+                bucketDiv.classList.add("col", "bucket-out");
+
+                const bucketLink = document.createElement("a");
+                bucketLink.classList.add("row");
+                bucketLink.href = `/files/bucket/${bucket.bucketName}`;
+
+                const imgDiv = document.createElement("div");
+                imgDiv.classList.add("col-12");
+                const img = document.createElement("img");
+                img.src = "/images/folder.svg";
+                img.width = 100;
+                img.height = 100;
+                img.alt = "folder";
+                imgDiv.appendChild(img);
+
+                const nameDiv = document.createElement("div");
+                nameDiv.classList.add("col-12");
+                const span = document.createElement("span");
+                span.innerText = bucket.bucketName;
+                nameDiv.appendChild(span);
+
+                bucketLink.appendChild(imgDiv);
+                bucketLink.appendChild(nameDiv);
+                bucketDiv.appendChild(bucketLink);
+                container.appendChild(bucketDiv);
+            });
+        });
+    }
+    document.getElementById("bucketModal").addEventListener("modalClosed", loadBuckets);
+</script>
+
+</body>
+</html>

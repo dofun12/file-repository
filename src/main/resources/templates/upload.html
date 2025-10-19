@@ -30,14 +30,13 @@
 
         </div>
 
-        <input class="form-control mb-4" style="height: 200px" type="file" name="file"/>
+        <input class="form-control mb-4" style="height: 200px" multiple type="file" name="file"/>
         <button class="form-control btn btn-info" type="submit">Upload</button>
     </form>
-</div>
-
-<div>
+    <a th:href="@{/buckets/}">Back to buckets</a><br />
     <a th:href="@{/files}">View Files</a>
 </div>
+
 <div th:text="${message}"></div>
 <script type="text/javascript">
     function loadBuckets() {
@@ -51,6 +50,9 @@
             console.log(data);
             const select = document.getElementById("bucketNameId");
             select.innerHTML = "";
+            const defaultOption = document.createElement("option");
+            defaultOption.value = defaultOption.innerText = "default";
+            select.append(defaultOption);
             data.forEach(bucket => {
                 const option = document.createElement("option");
                 option.value = bucket.bucketName;
@@ -61,7 +63,7 @@
             console.log("ERROR")
         });
     }
-    document.getElementById("exampleModal").addEventListener("modalClosed", function(event) {
+    document.getElementById("bucketModal").addEventListener("modalClosed", function(event) {
         if (event.detail.updated) {
             console.log("Atualizado!");
             loadBuckets();

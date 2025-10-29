@@ -4,5 +4,10 @@
       "name": "filerepository.root.path",
       "type": "java.lang.String",
       "description": "Description for filerepository.root.path."
-  }
-] }
+    },
+    {
+      "name": "filerepository.max-size",
+      "type": "org.springframework.util.unit.DataSize",
+      "description": "Max size for uploaded files."
+    }
+  ] }

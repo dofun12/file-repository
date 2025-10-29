@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping("/upload")
 public class UploadController {
     static final Logger logger = LoggerFactory.getLogger(UploadController.class);
     private final StoreService uploadService;
@@ -30,9 +30,8 @@ public class UploadController {
     }
 
 
-    @GetMapping
-    public String index() {
-
+    @GetMapping("")
+    public String uploadIndex() {
         return "upload";
     }
 

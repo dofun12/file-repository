@@ -8,6 +8,17 @@ spring:
       max-file-size: 10GB
       max-request-size: 10GB
 
+
+  web:
+    resources:
+      static-locations: file:src/main/resources/static/
+      cache:
+        cachecontrol:
+          max-age: 3600
+          must-revalidate: false
+          cache-public: true
+
 filerepository:
+  max-size: 10GB
   root:
     path: "${LOCAL_STORAGE_PATH:storage-files}"

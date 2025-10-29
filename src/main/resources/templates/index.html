@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="br" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>File Repository</title>
+    <link th:href="@{/lib/bootstrap-5.3.8-dist/css/bootstrap.css}" rel="stylesheet" crossorigin="anonymous"/>
+</head>
+<body>
+    <div class="container">
+        <div class="col-row">
+            <div class="col-12  mt-4">
+                <a class="col-12 btn btn-info" th:href="@{/buckets}">Buckets</a>
+            </div>
+            <div class="col-12 mt-4">
+                <a class="col-12 btn btn-info" th:href="@{/files}">Files</a>
+            </div>
+
+        </div>
+        <div class="row mt-4">
+            <div class="col">
+                <strong>Total Storage:</strong>
+                <span class="me-1" th:text="${resume.totalUsed()}"></span>
+                <span  class="me-1">/</span>
+                <span  class="me-1" th:text="${resume.available()}"></span>
+                <span  class="me-1" th:text="${resume.percentUsed()}"></span>
+                <span class="me-1">Files</span>
+                <span  class="me-1" th:text="${resume.totalFiles()}"></span>
+            </div>
+        </div>
+
+    </div>
+
+
+    <script th:src="@{/lib/jquery/jquery-3.7.1.min.js}"></script>
+    <script th:src="@{/lib/bootstrap-5.3.8-dist/js/bootstrap.min.js}"></script>
+</body>
+</html>

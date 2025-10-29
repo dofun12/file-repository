@@ -2,14 +2,14 @@ package org.lemanoman.filerepository.service;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.lemanoman.filerepository.FileExtraInfo;
-import org.lemanoman.filerepository.HashResult;
-import org.lemanoman.filerepository.HashUtil;
-import org.lemanoman.filerepository.StoreResult;
+import org.lemanoman.filerepository.*;
 import org.lemanoman.filerepository.data.HashData;
+import org.lemanoman.filerepository.data.ResumeStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.unit.DataSize;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -27,6 +27,9 @@ public class StoreService {
     final LocationService locationService;
     final ObjectMapper objectMapper = new ObjectMapper();
     final BucketService bucketService;
+
+    @Value("${filerepository.max-size}")
+    private DataSize maxFileSize;
 
     public StoreService(LocationService locationService, BucketService bucketService) {
         this.locationService = locationService;
@@ -51,6 +54,19 @@ public class StoreService {
             }
         }
         return list;
+    }
+
+    public ResumeStatus getResumeStatus() {
+        File baseLocation = new File(locationService.getBaseLocation());
+        var files = FileUtils.listFiles(baseLocation);
+        var sum = files.stream().mapToLong(File::length).sum();
+        var total = files.size();
+
+        final double maxTotal = maxFileSize.toBytes();
+
+        String percentUsed = String.format("%.2f", (sum / maxTotal) * 100) + "%";
+        var available = maxTotal - sum;
+        return new ResumeStatus(FileUtils.bytesToHumanReadable(sum), percentUsed, FileUtils.bytesToHumanReadable(available), total);
     }
 
     public Map<String, List<FileExtraInfo>> getListAllMetadataGroupByBucket() {

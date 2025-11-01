@@ -10,7 +10,7 @@
     </parent>
     <groupId>org.lemanoman</groupId>
     <artifactId>file-repository</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
     <name>file-repository</name>
     <description>file-repository</description>
     <url/>

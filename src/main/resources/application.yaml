@@ -11,7 +11,6 @@ spring:
 
   web:
     resources:
-      static-locations: file:src/main/resources/static/
       cache:
         cachecontrol:
           max-age: 3600

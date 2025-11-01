@@ -42,8 +42,9 @@ public class StoreService {
             return new ArrayList<>();
         }
         List<FileExtraInfo> list = new ArrayList<>();
+        final var bucketFile =  locationService.getBucketFile();
         for(File file : Objects.requireNonNull(metadataDir.listFiles())) {
-            if(!file.getName().endsWith(".json")) {
+            if(!file.getName().endsWith(".json")|| bucketFile.getName().equals(file.getName())) {
                 continue;
             }
             try {
